@@ -92,6 +92,7 @@ namespace ChkFuncAsync
                 _lno = value;
             }
         }
+        private static String _lastwrd;     // 前回要素
         #endregion
 
         #region コンストラクタ
@@ -111,7 +112,8 @@ namespace ChkFuncAsync
             _wbuf = null;       // 設定情報無し
             _empty = true;
 
-            _Is_func = false;  // [Function]フラグ：false
+            _lastwrd = null;    // 前回要素無し 
+            _Is_func = false;   // [Function]フラグ：false
         }
 
         public async Task ExecAsync()
@@ -122,20 +124,28 @@ namespace ChkFuncAsync
 
                 if (_Is_func)
                 {   // [Function]フラグは、true？
-                    if (!rsvwrd.Is_class)
-                    {   // 評価情報は、非予約語？
+                    _wbuf = rsvwrd.Wbuf;
+                    if (rsvwrd.Pos != 0)
+                    {   // "("有り　かつ、キーワード有り
                         // ＬＢＬ情報に、class名を登録する
-                        _result = "C " + _wbuf + _lno.ToString();
-                        _Is_func = false;       // [class]フラグ：false
+                        _result = "F " + _wbuf.Substring(0, rsvwrd.Pos) + _lno.ToString();
                     }
+                    else
+                    {   // "("有り　かつ、キーワード無し
+                        // ＬＢＬ情報に、class名を登録する
+                        _result = "F " + _lastwrd + _lno.ToString();
+
+                    }
+
+                    rsvwrd.Is_func = false;
+                    _lastwrd = "";
+                    _Is_func = false;       // [class]フラグ：false
                 }
                 else
                 {   // [Function]フラグは、false
-                    if (rsvwrd.Is_class)
-                    {   // 評価情報は、"class"？
-                        _Is_func = true;       // [class]フラグ：true
-                        _result = "";
-                        rsvwrd.Is_class = false;
+                    if (!rsvwrd.Is_class && !rsvwrd.Is_namespace)
+                    {   // 非予約語？
+                        _lastwrd = _wbuf;
                     }
                 }
             }
