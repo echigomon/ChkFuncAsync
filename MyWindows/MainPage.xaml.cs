@@ -34,6 +34,8 @@ namespace MyWindows
         private CS_ChkFuncAsync chkfunc;
         private CS_ChkNamespaceAsync chknamespace;
         private CS_ChkClassAsync chkclass;
+
+        Boolean Appflg;
         #endregion
 
         public MainPage()
@@ -46,6 +48,7 @@ namespace MyWindows
 
             textBox01.Text = "";
             textBox02.Text = "";
+            Appflg = false;
 
             ClearResultTextBox();			// 初期表示をクリアする
         }
@@ -56,25 +59,40 @@ namespace MyWindows
             // WriteLineResult("\n[ChkFunc]ボタン押下");
             String KeyWord = textBox02.Text;
 
-            await chkfunc.ClearAsync();
+            // await chkfunc.ClearAsync();
+            chkfunc.Is_func = Appflg;
             chkfunc.Wbuf = KeyWord;
             chkfunc.Lno = 10;
             await chkfunc.ExecAsync();
 
             if (chkfunc.Result != "")
             {   // Ｆｕｎｃｔｉｏｎ検出？
-                WriteLineResult("Result : [{0}]", chkfunc.Wbuf);
+                WriteLineResult("Result : [{0}]", chkfunc.Result);
+            }
+            if (chkfunc.Is_func)
+            {   // [Namespace]検出？
+                WriteLineResult("ChkFunc : True");
+                Appflg = true;
+            }
+            else
+            {
+                WriteLineResult("ChkFunc : False");
+                Appflg = false;
             }
         }
         #endregion
 
         #region ［Ｒｅｓｅｔ］ボタン押下
-        private void button02_Click(object sender, RoutedEventArgs e)
+        private async void button02_Click(object sender, RoutedEventArgs e)
         {   // [Reset]ボタン押下
             ClearResultTextBox();			// 初期表示をクリアする
+            await chknamespace.ClearAsync();
+            await chkclass.ClearAsync();
+            await chknamespace.ClearAsync();
 
             textBox01.Text = "";
             textBox02.Text = "";
+            Appflg = false;
         }
         #endregion
 
@@ -84,14 +102,25 @@ namespace MyWindows
             // WriteLineResult("\n[ChkNamespace]ボタン押下");
             String KeyWord = textBox02.Text;
 
-            await chknamespace.ClearAsync();
+            // await chknamespace.ClearAsync();
+            chknamespace.Is_namespace = Appflg;
             chknamespace.Wbuf = KeyWord;
             chknamespace.Lno = 10;
             await chknamespace.ExecAsync();
 
             if (chknamespace.Result != "")
             {   // Ｆｕｎｃｔｉｏｎ検出？
-                WriteLineResult("Result : [{0}]", chknamespace.Wbuf);
+                WriteLineResult("Result : [{0}]", chknamespace.Result);
+            }
+            if (chknamespace.Is_namespace)
+            {   // [Namespace]検出？
+                WriteLineResult("ChkNamespace : True");
+                Appflg = true;
+            }
+            else
+            {
+                WriteLineResult("ChkNamespace : False");
+                Appflg = false;
             }
         }
         #endregion
@@ -102,13 +131,24 @@ namespace MyWindows
             // WriteLineResult("\n[ChkClass]ボタン押下");
             String KeyWord = textBox02.Text;
 
-            await chkclass.ClearAsync();
+            // await chkclass.ClearAsync();
+            chkclass.Is_class = Appflg;
             chkclass.Wbuf = KeyWord;
             chkclass.Lno = 10;
             await chkclass.ExecAsync();
             if (chkclass.Result != "")
             {   // Ｆｕｎｃｔｉｏｎ検出？
-                WriteLineResult("Result : [{0}]", chkclass.Wbuf);
+                WriteLineResult("Result : [{0}]", chkclass.Result);
+            }
+            if (chkclass.Is_class)
+            {   // [Namespace]検出？
+                WriteLineResult("ChkClass : True");
+                Appflg = true;
+            }
+            else
+            {
+                WriteLineResult("ChkClass : False");
+                Appflg = false;
             }
         }
         #endregion
