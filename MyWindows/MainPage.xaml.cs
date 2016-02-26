@@ -13,8 +13,8 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
-using LRSkipAsync;
-using RsvwrdAsync;
+// using LRSkipAsync;
+// using RsvwrdAsync;
 using ChkNamespaceAsync;
 using ChkClassAsync;
 using ChkFuncAsync;
@@ -29,8 +29,8 @@ namespace MyWindows
     public sealed partial class MainPage : Page
     {
         #region 初期設定
-        private CS_LRskipAsync lrskip;
-        private CS_RsvwrdAsync rsvwrd;
+//        private CS_LRskipAsync lrskip;
+//        private CS_RsvwrdAsync rsvwrd;
         private CS_ChkFuncAsync chkfunc;
         private CS_ChkNamespaceAsync chknamespace;
         private CS_ChkClassAsync chkclass;
@@ -75,6 +75,41 @@ namespace MyWindows
 
             textBox01.Text = "";
             textBox02.Text = "";
+        }
+        #endregion
+
+        #region ［ＣｈｋＮａｍｅｓｐａｃｅ］ボタン押下
+        private async void button03_Click(object sender, RoutedEventArgs e)
+        {   // [ChkNamespace]ボタン押下
+            // WriteLineResult("\n[ChkNamespace]ボタン押下");
+            String KeyWord = textBox02.Text;
+
+            await chknamespace.ClearAsync();
+            chknamespace.Wbuf = KeyWord;
+            chknamespace.Lno = 10;
+            await chknamespace.ExecAsync();
+
+            if (chknamespace.Result != "")
+            {   // Ｆｕｎｃｔｉｏｎ検出？
+                WriteLineResult("Result : [{0}]", chknamespace.Wbuf);
+            }
+        }
+        #endregion
+
+        #region ［ＣｈｋＣｌａｓｓ］ボタン押下
+        private async void button04_Click(object sender, RoutedEventArgs e)
+        {   // [ChkClass]ボタン押下
+            // WriteLineResult("\n[ChkClass]ボタン押下");
+            String KeyWord = textBox02.Text;
+
+            await chkclass.ClearAsync();
+            chkclass.Wbuf = KeyWord;
+            chkclass.Lno = 10;
+            await chkclass.ExecAsync();
+            if (chkclass.Result != "")
+            {   // Ｆｕｎｃｔｉｏｎ検出？
+                WriteLineResult("Result : [{0}]", chkclass.Wbuf);
+            }
         }
         #endregion
     }
