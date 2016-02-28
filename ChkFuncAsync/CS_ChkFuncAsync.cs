@@ -121,19 +121,22 @@ namespace ChkFuncAsync
             if (!_empty)
             {   // バッファーに実装有り
                 await rsvwrd.ExecAsync(_wbuf);     // 評価情報の予約語確認を行う
+                _Is_func = rsvwrd.Is_func;
 
                 if (_Is_func)
                 {   // [Function]フラグは、true？
-                    _wbuf = rsvwrd.Wbuf;
+                    // _wbuf = rsvwrd.Wbuf;
                     if (rsvwrd.Pos != 0)
                     {   // "("有り　かつ、キーワード有り
                         // ＬＢＬ情報に、class名を登録する
-                        _result = "F " + _wbuf.Substring(0, rsvwrd.Pos) + _lno.ToString();
+                        // _result = "F " + _wbuf.Substring(0, rsvwrd.Pos) + _lno.ToString();
+                        _result = string.Format("F {0} {1,5:D}", _wbuf.Substring(0, rsvwrd.Pos), _lno);
                     }
                     else
                     {   // "("有り　かつ、キーワード無し
                         // ＬＢＬ情報に、class名を登録する
-                        _result = "F " + _lastwrd + _lno.ToString();
+                        // _result = "F " + _lastwrd + _lno.ToString();
+                        _result = string.Format("F {0} {1,5:D}", _lastwrd, _lno);
 
                     }
 
@@ -148,6 +151,81 @@ namespace ChkFuncAsync
                         _lastwrd = _wbuf;
                     }
                 }
+            }
+        }
+        public async Task<String> ExecAsync(int lineno, String msg)
+        {   // "namespace"評価
+            await SetbufAsync(lineno, msg);
+
+            if (!_empty)
+            {   // バッファーに実装有り
+                await rsvwrd.ExecAsync(_wbuf);     // 評価情報の予約語確認を行う
+                _Is_func = rsvwrd.Is_func;
+
+                if (_Is_func)
+                {   // [Function]フラグは、true？
+                    // _wbuf = rsvwrd.Wbuf;
+                    if (rsvwrd.Pos != 0)
+                    {   // "("有り　かつ、キーワード有り
+                        // ＬＢＬ情報に、class名を登録する
+                        // _result = "F " + _wbuf.Substring(0, rsvwrd.Pos) + _lno.ToString();
+                        _result = string.Format("F {0} {1,5:D}", _wbuf.Substring(0, rsvwrd.Pos), _lno);
+                    }
+                    else
+                    {   // "("有り　かつ、キーワード無し
+                        // ＬＢＬ情報に、class名を登録する
+                        // _result = "F " + _lastwrd + _lno.ToString();
+                        _result = string.Format("F {0} {1,5:D}", _lastwrd, _lno);
+                    }
+
+                    rsvwrd.Is_func = false;
+                    _lastwrd = "";
+                    _Is_func = false;       // [class]フラグ：false
+                }
+                else
+                {   // [Function]フラグは、false
+                    if (!rsvwrd.Is_class && !rsvwrd.Is_namespace)
+                    {   // 非予約語？
+                        _lastwrd = _wbuf;
+                    }
+                }
+            }
+
+            return (_result);
+        }
+        #endregion
+
+        #region サブ・モジュール
+        private async Task SetbufAsync(int lineno, String _strbuf)
+        {   // [_wbuf]情報設定
+            _lno = lineno;
+            _wbuf = _strbuf;
+
+            if (_wbuf == null)
+            {   // 設定情報は無し？
+                _empty = true;
+            }
+            else
+            {   // 整形処理を行う
+                // 不要情報削除
+                if (lrskip == null)
+                {   // 未定義？
+                    lrskip = new CS_LRskipAsync();
+                }
+                await lrskip.ExecAsync(_wbuf);
+                _wbuf = lrskip.Wbuf;
+
+                // 作業の為の下処理
+                if (_wbuf.Length == 0 || _wbuf == null)
+                {   // バッファー情報無し
+                    // _wbuf = null;
+                    _empty = true;
+                }
+                else
+                {
+                    _empty = false;
+                }
+
             }
         }
         #endregion

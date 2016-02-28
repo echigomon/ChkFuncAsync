@@ -58,12 +58,13 @@ namespace MyWindows
         {   // [ChkFunc]ボタン押下
             // WriteLineResult("\n[ChkFunc]ボタン押下");
             String KeyWord = textBox02.Text;
+            String _ans;
 
             // await chkfunc.ClearAsync();
-            chkfunc.Is_func = Appflg;
+            // chkfunc.Is_func = Appflg;
             chkfunc.Wbuf = KeyWord;
             chkfunc.Lno = 10;
-            await chkfunc.ExecAsync();
+            await chkfunc.ExecAsync(10, KeyWord);
 
             if (chkfunc.Result != "")
             {   // Ｆｕｎｃｔｉｏｎ検出？
@@ -101,16 +102,17 @@ namespace MyWindows
         {   // [ChkNamespace]ボタン押下
             // WriteLineResult("\n[ChkNamespace]ボタン押下");
             String KeyWord = textBox02.Text;
+            String _ans;
 
             // await chknamespace.ClearAsync();
             chknamespace.Is_namespace = Appflg;
-            chknamespace.Wbuf = KeyWord;
-            chknamespace.Lno = 10;
-            await chknamespace.ExecAsync();
+//            chknamespace.Wbuf = KeyWord;
+//            chknamespace.Lno = 10;
+            _ans = await chknamespace.ExecAsync(10, KeyWord);
 
             if (chknamespace.Result != "")
             {   // Ｆｕｎｃｔｉｏｎ検出？
-                WriteLineResult("Result : [{0}]", chknamespace.Result);
+                WriteLineResult("Result : [{0}]", _ans);
             }
             if (chknamespace.Is_namespace)
             {   // [Namespace]検出？
@@ -130,15 +132,16 @@ namespace MyWindows
         {   // [ChkClass]ボタン押下
             // WriteLineResult("\n[ChkClass]ボタン押下");
             String KeyWord = textBox02.Text;
+            String _ans;
 
             // await chkclass.ClearAsync();
             chkclass.Is_class = Appflg;
-            chkclass.Wbuf = KeyWord;
-            chkclass.Lno = 10;
-            await chkclass.ExecAsync();
+//            chkclass.Wbuf = KeyWord;
+//            chkclass.Lno = 10;
+            _ans = await chkclass.ExecAsync(10, KeyWord);
             if (chkclass.Result != "")
             {   // Ｆｕｎｃｔｉｏｎ検出？
-                WriteLineResult("Result : [{0}]", chkclass.Result);
+                WriteLineResult("Result : [{0}]", _ans);
             }
             if (chkclass.Is_class)
             {   // [Namespace]検出？
